@@ -95,7 +95,7 @@ static udp_payload_field_type_def_t udp_payload_template_fields[] = {
     {.name = "SPORT_N",
      .ftype = UDP_SPORT_N,
      .max_length = 2,
-     .desc = "UDP source port in netowrk byte order"},
+     .desc = "UDP source port in network byte order"},
     {.name = "SPORT",
      .ftype = UDP_SPORT_A,
      .max_length = 5,
@@ -452,6 +452,7 @@ int udp_do_validate_packet(const struct ip *ip_hdr, uint32_t len,
 		if (icmp_helper_validate(ip_hdr, len, sizeof(struct udphdr),
 					 &ip_inner,
 					 &ip_inner_len) == PACKET_INVALID) {
+			return PACKET_INVALID;
 		}
 		struct udphdr *udp = get_udp_header(ip_inner, ip_inner_len);
 		// we can always check the destination port because this is the
@@ -839,7 +840,7 @@ probe_module_t module_udp = {
     .port_args = 1,
     .thread_initialize = &udp_init_perthread,
     .global_initialize = &udp_global_initialize,
-    .make_packet = &udp_make_packet, // can be overriden to udp_make_templated_packet by udp_global_initalize
+    .make_packet = &udp_make_packet, // can be overridden to udp_make_templated_packet by udp_global_initalize
     .print_packet = &udp_print_packet,
     .validate_packet = &udp_validate_packet,
     .process_packet = &udp_process_packet,
